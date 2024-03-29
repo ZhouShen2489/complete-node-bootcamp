@@ -30,6 +30,7 @@ const replaceCard = (temp, card) => {
   output = output.replace(/{%ID%}/g, card.id);
   output = output.replace(/{%FROM%}/g, card.from);
   output = output.replace(/{%NUTRIENTS%}/g, card.nutrients);
+  output = output.replace(/{%DESCRIPTION%}/g, card.description);
   output = output.replace(/{%QUANTITY%}/g, card.quantity);
   output = output.replace(/{%PRICE%}/g, card.price);
 
@@ -58,10 +59,10 @@ const dataObj = JSON.parse(data);
 // console.log(productInfo);
 
 const server = http.createServer((req, res) => {
-  const pathName = req.url;
+  const { pathname, query } = url.parse(req.url, true);
 
   // Overview Page
-  if (pathName === "/" || pathName === "/overview") {
+  if (pathname === "/" || pathname === "/overview") {
     res.writeHead(200, { "Content-type": "text/html" });
     const cardHTML = dataObj
       .map((el) => replaceCard(templateCard, el))
@@ -72,7 +73,7 @@ const server = http.createServer((req, res) => {
   }
 
   // Product Page
-  else if (pathName === "/api") {
+  else if (pathname === "/api") {
     // parse the json, get product info
     res.writeHead(200, { "Content-type": "application/json" });
     res.end(data);
@@ -80,8 +81,11 @@ const server = http.createServer((req, res) => {
 
   // API
   // res.end("API");
-  else if (pathName === "/product") {
-    res.end("This is the PRODUCT!");
+  else if (pathname === "/product") {
+    res.writeHead(200, { "Content-type": "text/html" });
+    const product = dataObj[query.id];
+    const output = replaceCard(templateProduct, product);
+    res.end(output);
   }
 
   // Not Found
