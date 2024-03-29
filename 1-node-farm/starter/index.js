@@ -1,6 +1,7 @@
 const fs = require("fs");
 const http = require("http");
 const url = require("url");
+const replaceTemplate = require(".modules/replaceTemplate");
 
 ////////////////////////////
 //files
@@ -23,21 +24,6 @@ const url = require("url");
 
 ///////////////////////
 // SERVER & ROUTING
-
-const replaceCard = (temp, card) => {
-  let output = temp.replace(/{%IMAGE%}/g, card.image);
-  output = output.replace(/{%PRODUCTNAME%}/g, card.productName);
-  output = output.replace(/{%ID%}/g, card.id);
-  output = output.replace(/{%FROM%}/g, card.from);
-  output = output.replace(/{%NUTRIENTS%}/g, card.nutrients);
-  output = output.replace(/{%DESCRIPTION%}/g, card.description);
-  output = output.replace(/{%QUANTITY%}/g, card.quantity);
-  output = output.replace(/{%PRICE%}/g, card.price);
-
-  if (!card.organic) output = output.replace(/{%NOT_ORGANIC%}/g, "not-organic");
-
-  return output;
-};
 
 // only get and parse the data once at the beginning
 // HTML Templating
@@ -65,7 +51,7 @@ const server = http.createServer((req, res) => {
   if (pathname === "/" || pathname === "/overview") {
     res.writeHead(200, { "Content-type": "text/html" });
     const cardHTML = dataObj
-      .map((el) => replaceCard(templateCard, el))
+      .map((el) => replaceTemplate(templateCard, el))
       .join("");
     const output = templateOverview.replace("{%PRODUCT_CARDS%}", cardHTML);
 
@@ -84,7 +70,7 @@ const server = http.createServer((req, res) => {
   else if (pathname === "/product") {
     res.writeHead(200, { "Content-type": "text/html" });
     const product = dataObj[query.id];
-    const output = replaceCard(templateProduct, product);
+    const output = replaceTemplate(templateProduct, product);
     res.end(output);
   }
 
