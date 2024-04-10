@@ -6,8 +6,12 @@ const userRouter = require('./routes/userRoutes');
 const app = express();
 
 // 1) Middleware
-app.use(morgan('dev')); // login infomation
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev')); // login infomation, only need in development mode
+}
+
 app.use(express.json()); // middleware
+app.use(express.static(`${__dirname}/public`)); // static file
 
 app.use((req, res, next) => {
   console.log('Hello from the middleware🤚');
@@ -16,6 +20,7 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  console.log(req.requestTime);
   next();
 });
 
