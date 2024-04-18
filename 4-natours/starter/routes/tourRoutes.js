@@ -3,7 +3,7 @@ const tourController = require('../controllers/tourController');
 
 const router = express.Router(); // sub app
 
-router.param('id', tourController.checkID); // check the id param in the route. if exist, check the IDc
+// router.param('id', tourController.checkID); // check the id param in the route. if exist, check the IDc
 
 router
   .route('/')

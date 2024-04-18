@@ -17,7 +17,7 @@ mongoose
   })
   .then(() => console.log('DB is connected!'));
 
-console.log(app.get('env'));
+// console.log(app.get('env'));
 // console.log(process.env);  // display the environment variables
 
 // 4) Start the Server
